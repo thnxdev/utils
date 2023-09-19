@@ -74,7 +74,7 @@ func New(
 				SET animate_attempt_ts = UNIXEPOCH()
 				WHERE id = ?;
 				*/
-				db.UpdateDonationAnimateAttemptTs(ctx, row.ID)
+				_ = db.UpdateDonationAnimateAttemptTs(ctx, row.ID)
 				continue
 			}
 
@@ -87,7 +87,7 @@ func New(
 					donable_ts = UNIXEPOCH()
 				WHERE id = ?;
 				*/
-				db.UpdateDonationDonableAnimateTs(ctx, row.ID)
+				_ = db.UpdateDonationDonableAnimateTs(ctx, row.ID)
 			} else {
 				/* autoquery name: UpdateDonationAnimateTs :exec
 
@@ -95,7 +95,7 @@ func New(
 				SET animate_ts = UNIXEPOCH()
 				WHERE id = ?;
 				*/
-				db.UpdateDonationAnimateTs(ctx, row.ID)
+				_ = db.UpdateDonationAnimateTs(ctx, row.ID)
 			}
 		}
 

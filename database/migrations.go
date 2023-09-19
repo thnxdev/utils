@@ -22,7 +22,7 @@ func Migrate(ctx context.Context, dsn string) error {
 	}
 	defer conn.Close()
 
-	goose.SetDialect("sqlite3")
+	_ = goose.SetDialect("sqlite3")
 	goose.SetBaseFS(Migrations)
 	goose.SetLogger(goose.NopLogger())
 	err = goose.Up(conn, "schema")

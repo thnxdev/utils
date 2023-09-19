@@ -13,6 +13,7 @@ require (
 	github.com/sirupsen/logrus v1.9.3
 	golang.org/x/oauth2 v0.12.0
 	golang.org/x/sync v0.3.0
+	golang.org/x/text v0.13.0
 	golang.org/x/tools v0.13.0
 )
 

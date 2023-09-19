@@ -7,6 +7,8 @@ import (
 
 	"github.com/alecthomas/errors"
 	"github.com/alecthomas/kong"
+	"golang.org/x/text/cases"
+	"golang.org/x/text/language"
 )
 
 func CreateLoader(r io.Reader) (kong.Resolver, error) {
@@ -28,12 +30,13 @@ func CreateLoader(r io.Reader) (kong.Resolver, error) {
 }
 
 func flatten(config map[string]interface{}) map[string]interface{} {
+	caser := cases.Title(language.English)
 	flat := map[string]interface{}{}
 	for k, v := range config {
 		switch v := v.(type) {
 		case map[string]interface{}:
 			for k2, v2 := range flatten(v) {
-				flat[camelCase(k)+strings.Title(camelCase(k2))] = v2
+				flat[camelCase(k)+caser.String(camelCase(k2))] = v2
 			}
 		default:
 			flat[k] = v
@@ -43,6 +46,7 @@ func flatten(config map[string]interface{}) map[string]interface{} {
 }
 
 func camelCase(s string) string {
-	out := strings.ReplaceAll(strings.Title(strings.ReplaceAll(s, "-", " ")), " ", "")
+	caser := cases.Title(language.English)
+	out := strings.ReplaceAll(caser.String(strings.ReplaceAll(s, "-", " ")), " ", "")
 	return strings.ToLower(out[:1]) + out[1:]
 }

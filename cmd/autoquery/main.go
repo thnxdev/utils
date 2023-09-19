@@ -3,7 +3,6 @@ package main
 import (
 	"bytes"
 	"fmt"
-	"io/ioutil"
 	"log"
 	"os"
 	"path/filepath"
@@ -65,7 +64,7 @@ Example:
 		}
 	}
 	for dest, sqlc := range files {
-		err = ioutil.WriteFile(dest, sqlc.Bytes(), 0600)
+		err = os.WriteFile(dest, sqlc.Bytes(), 0600)
 		kctx.FatalIfErrorf(err)
 	}
 }

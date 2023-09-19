@@ -95,7 +95,7 @@ func New(
 				SET donate_attempt_ts = UNIXEPOCH()
 				WHERE id = ?;
 				*/
-				db.UpdateDonationDonateAttemptTs(ctx, row.ID)
+				_ = db.UpdateDonationDonateAttemptTs(ctx, row.ID)
 				continue
 			}
 
@@ -105,7 +105,7 @@ func New(
 			SET donate_ts = UNIXEPOCH()
 			WHERE id = ?;
 			*/
-			db.UpdateDonationDonateTs(ctx, row.ID)
+			_ = db.UpdateDonationDonateTs(ctx, row.ID)
 		}
 
 		return nil
