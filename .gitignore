@@ -1,0 +1,5 @@
+.env
+.go-generate
+.hermit
+db.sql
+config.json

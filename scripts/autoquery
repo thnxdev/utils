@@ -1,0 +1,5 @@
+#!/bin/bash
+set -euo pipefail
+name="$(basename $0)"
+dir="$(dirname "$0")/.."
+(cd "${dir}/cmd/$name" ; go build -trimpath -buildvcs=false -ldflags="-s -w -buildid=" -o "../../.hermit/$name" .) && exec "${dir}/.hermit/$name" "$@"

@@ -1,0 +1,19 @@
+services:
+  wkr-gh-sponsor:
+    container_name: wkr-gh-sponsor
+    build:
+      context: .
+      dockerfile: Dockerfile
+    volumes:
+      - type: bind
+        source: /tmp/wkr-gh-sponsor.sql
+        target: /app/db.sql
+      - type: bind
+        source: /tmp/wkr-gh-sponsor.json
+        target: /app/config.json
+    command: /app/wkr-gh-sponsor -C config.json
+    working_dir: /app
+    environment:
+      DB_PATH: /app/db.sql
+      TD_API_KEY: "${TD_API_KEY}"
+      GH_CLASSIC_ACCESS_TOKEN: "${GH_CLASSIC_ACCESS_TOKEN}"

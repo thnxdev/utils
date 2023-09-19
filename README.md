@@ -19,11 +19,20 @@ Flags:
       --td-api-key=TD-API-KEY    Api key for thanks.dev ($TD_API_KEY).
       --gh-classic-access-token=GH-ACCESS-TOKEN
                                  GitHub classis access token with admin:org & user scopes ($GH_CLASSIC_ACCESS_TOKEN).
-      --entities=ENTITIES,...    The GitHub entities to process sponsorships for.
+      --entities=ENTITIES,...    The GitHub entities to process sponsorships for. First entity in the list is
+                                 considered DEFAULT.
 
 Observability:
   --log-level=info    Log level (trace,debug,info,warning,error,fatal,panic).
   --log-json          Log in JSON format.
+```
+
+### Docker & docker compose
+A sample docker-compose.yml is provided to run this project.
+```
+cp example.env .env # update the latest api keys & access tokens
+cp example.config.json config.json # insert the github slugs of the user accounts / orgs
+docker compose --env-file .env up -d wkr-gh-sponsor
 ```
 
 ### TD-API-KEY
