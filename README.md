@@ -22,6 +22,7 @@ Flags:
                                  GitHub classis access token with admin:org & user scopes ($GH_CLASSIC_ACCESS_TOKEN).
       --entities=ENTITIES,...    The GitHub entities to process sponsorships for. First entity in the list is
                                  considered DEFAULT.
+      --sponsor-amount=1         The amount to donate to each dependency
       --wkr-td-disabled          Disable worker.
       --wkr-animate-disabled     Disable worker.
       --wkr-donate-disabled      Disable worker.

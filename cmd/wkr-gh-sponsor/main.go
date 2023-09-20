@@ -44,6 +44,8 @@ var cli struct {
 
 	Entities []wkrghsponsor.Entity `help:"The GitHub entities to process sponsorships for. First entity in the list is considered DEFAULT." required:""`
 
+	SponsorAmount wkrghsponsor.SponsorAmount `help:"The amount to donate to each dependency" default:"1"`
+
 	WkrTd      wkr_config `embed:"" prefix:"wkr-td-"`
 	WkrAnimate wkr_config `embed:"" prefix:"wkr-animate-"`
 	WkrDonate  wkr_config `embed:"" prefix:"wkr-donate-"`
@@ -106,6 +108,7 @@ func main() {
 	kctx.Bind(cli.TdApiKey)
 	kctx.Bind(cli.GhClassicAccessToken)
 	kctx.Bind(cli.Entities)
+	kctx.Bind(cli.SponsorAmount)
 
 	// Start the workers
 	wkrs := []struct {

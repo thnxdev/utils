@@ -26,6 +26,7 @@ import (
 func New(
 	db *database.DB,
 	ghAccesstoken wkrghsponsor.GhAccessToken,
+	sponsorAmount wkrghsponsor.SponsorAmount,
 ) workers.Worker {
 	return func(ctx context.Context) error {
 		logger := log.FromContext(ctx)
@@ -57,7 +58,7 @@ func New(
 			return err
 		}
 
-		amount := githubv4.Int(1)
+		amount := githubv4.Int(sponsorAmount)
 		isRecurring := githubv4.Boolean(false)
 		privacyLevel := githubv4.SponsorshipPrivacy(githubv4.SponsorshipPrivacyPublic)
 
