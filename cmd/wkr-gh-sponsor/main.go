@@ -101,20 +101,24 @@ func main() {
 
 	// Start the workers
 	wkrs := []struct {
-		name string
-		fn   any
+		name         string
+		fn           any
+		workInterval time.Duration
 	}{
 		{
-			name: "wkr-td",
-			fn:   wkrtd.New,
+			name:         "wkr-td",
+			fn:           wkrtd.New,
+			workInterval: time.Hour * 3, // 4 times a day
 		},
 		{
-			name: "wkr-animate",
-			fn:   wkranimate.New,
+			name:         "wkr-animate",
+			fn:           wkranimate.New,
+			workInterval: time.Minute, // once a minute
 		},
 		{
-			name: "wkr-donate",
-			fn:   wkrdonate.New,
+			name:         "wkr-donate",
+			fn:           wkrdonate.New,
+			workInterval: time.Minute, // once a minute
 		},
 	}
 	for _, w := range wkrs {
@@ -133,10 +137,10 @@ func main() {
 		wg.Go(func() error {
 			logger.Info("Starting")
 			retry := &backoff.Backoff{
-				Min:    time.Minute,
+				Min:    w.workInterval,
 				Factor: 1.1,
 				Jitter: true,
-				Max:    time.Minute * 4,
+				Max:    w.workInterval * 4,
 			}
 			for {
 				logger.Info("Running")
@@ -144,7 +148,7 @@ func main() {
 				// default loop interval is once an hour
 				// but if the worker returns an error we'll
 				// do a backoff retry in one minute up to 4 mins
-				delay := time.Hour
+				delay := w.workInterval
 
 				err := wkr(ctx)
 				if err != nil {
