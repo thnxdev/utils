@@ -11,7 +11,7 @@ services:
       - type: bind
         source: /tmp/wkr-gh-sponsor.json
         target: /app/config.json
-    command: /app/wkr-gh-sponsor -C config.json
+    command: /app/wkr-gh-sponsor --config config.json
     working_dir: /app
     environment:
       DB_PATH: /app/db.sql
