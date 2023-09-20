@@ -7,20 +7,24 @@ This project is a standalone worker that continuosly:
 
 ### Command line flags
 ```
-wkr-gh-sponsor🐚 ➜  wkr-gh-sponsor git:(master) ./scripts/wkr-gh-sponsor --help
-Usage: wkr-gh-sponsor --db-path="db.sql" --td-api-key=TD-API-KEY --gh-classic-access-token=GH-ACCESS-TOKEN --entities=ENTITIES,...
+➜  wkr-gh-sponsor git:(master) ./scripts/wkr-gh-sponsor --help
+Usage: wkr-gh-sponsor --db-path="db.sql" --td-api-url="https://api.thanks.dev/v1/deps" --td-api-key=TD-API-KEY --gh-classic-access-token=GH-ACCESS-TOKEN --entities=ENTITIES,...
 
 Flags:
   -h, --help                     Show context-sensitive help.
   -v, --version                  Print version and exit.
   -C, --config=FILE              Config file ($CONFIG_PATH).
-  -e, --env=local                Environment (local,prod) ($APP_ENV).
-      --db-path="db.sql"         Path to db file.
-      --td-api-key=TD-API-KEY    Api key for thanks.dev ($TD_API_KEY).
+      --db-path="db.sql"         Path to db file ($DB_PATH).
+      --td-api-url="https://api.thanks.dev/v1/deps"
+                                 thanks.dev API URL ($TD_API_URL).
+      --td-api-key=TD-API-KEY    thanks.dev API key ($TD_API_KEY).
       --gh-classic-access-token=GH-ACCESS-TOKEN
                                  GitHub classis access token with admin:org & user scopes ($GH_CLASSIC_ACCESS_TOKEN).
       --entities=ENTITIES,...    The GitHub entities to process sponsorships for. First entity in the list is
                                  considered DEFAULT.
+      --wkr-td-disabled          Disable worker.
+      --wkr-animate-disabled     Disable worker.
+      --wkr-donate-disabled      Disable worker.
 
 Observability:
   --log-level=info    Log level (trace,debug,info,warning,error,fatal,panic).

@@ -26,6 +26,10 @@ import (
 // Populated during build.
 var GitCommit string = "dev"
 
+type wkr_config struct {
+	Disabled bool `help:"Disable worker." default:"false"`
+}
+
 var cli struct {
 	Version kong.VersionFlag `short:"v" help:"Print version and exit."`
 	Config  kong.ConfigFlag  `short:"C" help:"Config file." placeholder:"FILE" env:"CONFIG_PATH"`
@@ -39,6 +43,10 @@ var cli struct {
 	GhClassicAccessToken wkrghsponsor.GhAccessToken `help:"GitHub classis access token with admin:org & user scopes." required:"" env:"GH_CLASSIC_ACCESS_TOKEN"`
 
 	Entities []wkrghsponsor.Entity `help:"The GitHub entities to process sponsorships for. First entity in the list is considered DEFAULT." required:""`
+
+	WkrTd      wkr_config `embed:"" prefix:"wkr-td-"`
+	WkrAnimate wkr_config `embed:"" prefix:"wkr-animate-"`
+	WkrDonate  wkr_config `embed:"" prefix:"wkr-donate-"`
 }
 
 func main() {
@@ -103,21 +111,25 @@ func main() {
 	wkrs := []struct {
 		name         string
 		fn           any
+		disabled     bool
 		workInterval time.Duration
 	}{
 		{
 			name:         "wkr-td",
 			fn:           wkrtd.New,
+			disabled:     cli.WkrTd.Disabled,
 			workInterval: time.Hour * 3, // 4 times a day
 		},
 		{
 			name:         "wkr-animate",
 			fn:           wkranimate.New,
+			disabled:     cli.WkrAnimate.Disabled,
 			workInterval: time.Minute, // once a minute
 		},
 		{
 			name:         "wkr-donate",
 			fn:           wkrdonate.New,
+			disabled:     cli.WkrDonate.Disabled,
 			workInterval: time.Minute, // once a minute
 		},
 	}
@@ -126,6 +138,11 @@ func main() {
 
 		logger := logger.WithField("name", w.name)
 		ctx := log.LoggerContext(ctx, logger)
+
+		if w.disabled {
+			logger.Infof("Worker %s not enabled", w.name)
+			continue
+		}
 
 		out, err := kctx.Call(w.fn)
 		if err != nil {
