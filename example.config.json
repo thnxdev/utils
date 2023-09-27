@@ -1,6 +1,11 @@
 {
+  "logLevel": "debug",
   "entities": [
     "getsentry",
-    "codecov"
-  ]
+    "codecov",
+    "syntaxfm"
+  ],
+  "wkr-donate": {
+    "disabled": true
+  }
 }
