@@ -4,16 +4,29 @@
 
 package database
 
-import ()
+import (
+	"database/sql"
+)
 
 type Donation struct {
-	ID               int64
-	SponsorID        string
-	RecipientID      string
-	LastTs           int64
-	AnimateTs        int64
-	AnimateAttemptTs int64
-	DonableTs        int64
-	DonateTs         int64
-	DonateAttemptTs  int64
+	ID              int64
+	SponsorID       string
+	RecipientID     string
+	LastTs          int64
+	DonateTs        int64
+	DonateAttemptTs int64
+}
+
+type Kvstore struct {
+	K string
+	V string
+}
+
+type Repo struct {
+	OwnerName      string
+	RepoName       string
+	LastTs         int64
+	CursorManifest sql.NullString
+	CursorDep      sql.NullString
+	AnimateTs      int64
 }
