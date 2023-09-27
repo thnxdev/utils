@@ -12,15 +12,15 @@ import (
 	"github.com/sirupsen/logrus"
 	"golang.org/x/sync/errgroup"
 
-	wkrghsponsor "github.com/thnxdev/wkr-gh-sponsor"
-	"github.com/thnxdev/wkr-gh-sponsor/database"
-	"github.com/thnxdev/wkr-gh-sponsor/utils/config"
-	"github.com/thnxdev/wkr-gh-sponsor/utils/log"
-	"github.com/thnxdev/wkr-gh-sponsor/workers"
+	wkrghsponsor "github.com/thnxdev/utils"
+	"github.com/thnxdev/utils/database"
+	"github.com/thnxdev/utils/utils/config"
+	"github.com/thnxdev/utils/utils/log"
+	"github.com/thnxdev/utils/workers"
 
-	_ "github.com/thnxdev/wkr-gh-sponsor/workers/wkr-donate"
-	_ "github.com/thnxdev/wkr-gh-sponsor/workers/wkr-entities"
-	_ "github.com/thnxdev/wkr-gh-sponsor/workers/wkr-repos"
+	_ "github.com/thnxdev/utils/workers/wkr-donate"
+	_ "github.com/thnxdev/utils/workers/wkr-entities"
+	_ "github.com/thnxdev/utils/workers/wkr-repos"
 )
 
 // Populated during build.

@@ -11,7 +11,7 @@ import (
 	"github.com/alecthomas/errors"
 	"github.com/alecthomas/kong"
 	"github.com/jpillora/backoff"
-	"github.com/thnxdev/wkr-gh-sponsor/utils/log"
+	"github.com/thnxdev/utils/utils/log"
 	"golang.org/x/sync/errgroup"
 )
 

@@ -9,11 +9,11 @@ import (
 
 	"github.com/alecthomas/errors"
 	"github.com/shurcooL/githubv4"
-	wkrghsponsor "github.com/thnxdev/wkr-gh-sponsor"
-	"github.com/thnxdev/wkr-gh-sponsor/database"
-	"github.com/thnxdev/wkr-gh-sponsor/utils/httpgh"
-	"github.com/thnxdev/wkr-gh-sponsor/utils/log"
-	"github.com/thnxdev/wkr-gh-sponsor/workers"
+	wkrghsponsor "github.com/thnxdev/utils"
+	"github.com/thnxdev/utils/database"
+	"github.com/thnxdev/utils/utils/httpgh"
+	"github.com/thnxdev/utils/utils/log"
+	"github.com/thnxdev/utils/workers"
 	"golang.org/x/oauth2"
 )
 

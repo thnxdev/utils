@@ -1,17 +1,17 @@
 services:
-  wkr-gh-sponsor:
-    container_name: wkr-gh-sponsor
+  mass-gh-sponsor:
+    container_name: mass-gh-sponsor
     build:
       context: .
       dockerfile: Dockerfile
     volumes:
       - type: bind
-        source: /tmp/wkr-gh-sponsor.sql
+        source: /tmp/mass-gh-sponsor.sql
         target: /app/db.sql
       - type: bind
-        source: /tmp/wkr-gh-sponsor.json
+        source: /tmp/mass-gh-sponsor.json
         target: /app/config.json
-    command: /app/wkr-gh-sponsor --config config.json
+    command: /app/mass-gh-sponsor --config config.json
     working_dir: /app
     environment:
       DB_PATH: /app/db.sql

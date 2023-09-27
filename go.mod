@@ -1,4 +1,4 @@
-module github.com/thnxdev/wkr-gh-sponsor
+module github.com/thnxdev/utils
 
 go 1.20
 

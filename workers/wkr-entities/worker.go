@@ -10,9 +10,9 @@ import (
 
 	"github.com/alecthomas/errors"
 	"github.com/google/go-github/v55/github"
-	wkrghsponsor "github.com/thnxdev/wkr-gh-sponsor"
-	"github.com/thnxdev/wkr-gh-sponsor/database"
-	"github.com/thnxdev/wkr-gh-sponsor/workers"
+	wkrghsponsor "github.com/thnxdev/utils"
+	"github.com/thnxdev/utils/database"
+	"github.com/thnxdev/utils/workers"
 )
 
 func init() {

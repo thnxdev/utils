@@ -1,4 +1,4 @@
-# wkr-gh-sponsor
+# mass-gh-sponsor
 
 This project is a standalone worker that continuosly:
   - Checks https://api.thanks.dev/v1/deps to obtain the latest list of dependencies;
@@ -7,8 +7,8 @@ This project is a standalone worker that continuosly:
 
 ### Command line flags
 ```
-➜  wkr-gh-sponsor git:(master) ./scripts/wkr-gh-sponsor --help
-Usage: wkr-gh-sponsor --db-path="db.sql" --gh-classic-access-token=GH-ACCESS-TOKEN --entities=ENTITIES,...
+➜  mass-gh-sponsor git:(master) ./scripts/mass-gh-sponsor --help
+Usage: mass-gh-sponsor --db-path="db.sql" --gh-classic-access-token=GH-ACCESS-TOKEN --entities=ENTITIES,...
 
 Flags:
   -h, --help                     Show context-sensitive help.
@@ -40,19 +40,19 @@ wkr-repos
 
 ### Run locally
 `. bin/activate-hermit`
-`GH_CLASSIC_ACCESS_TOKEN=<TOKEN> ./scripts/wkr-gh-sponsor --config example.config.json`
+`GH_CLASSIC_ACCESS_TOKEN=<TOKEN> ./scripts/mass-gh-sponsor --config example.config.json`
 
 ### Docker & docker compose
 A sample docker-compose.yml is provided to run this project.
 ```
 cp example.env .env # update the latest api keys & access tokens
 cp example.config.json config.json # insert the github slugs of the user accounts / orgs
-docker compose --env-file .env up -d wkr-gh-sponsor
+docker compose --env-file .env up -d mass-gh-sponsor
 ```
 
 ### GH-ACCESS-TOKEN
 Ensure you create a classic GH access token with `admin:org` and `user` scopes configured. Set a custom expiration date to one day after the last expected donation date.
-![image](https://github.com/thnxdev/wkr-gh-sponsor/assets/72539235/69f248a8-2351-471e-84d5-43eeba9d3f5f)
+![image](https://github.com/thnxdev/utils/assets/72539235/69f248a8-2351-471e-84d5-43eeba9d3f5f)
 
 **Ensure you keep the token stored securely**
 Unfortunately, these are the minimum scopes that can create a sponsorship via the GH GraphQL API and they contain write permissions on your account.
