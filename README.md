@@ -77,12 +77,11 @@ docker compose --env-file .env up -d mass-gh-sponsor
 
 ## 3. TD-API-KEY
 To obtain a thanks.dev API key, log into thanks.dev and visit the settings screen. The API key configurations are located towards the bottom of the screen.
-![image](https://github.com/thnxdev/utils/assets/72539235/9ff22805-164d-47ba-a71a-07e7cb6d832a)
-
+![image](https://github.com/thnxdev/utils/assets/72539235/610b19f4-2c52-4060-b17f-8f81ba8dbaf7)
 
 ## 4. GH-ACCESS-TOKEN
 Ensure you create a classic GH access token with `admin:org` and `user` scopes configured. Set a custom expiration date to one day after the last expected donation date.
-![image](https://github.com/thnxdev/utils/assets/72539235/69f248a8-2351-471e-84d5-43eeba9d3f5f)
+![image](https://github.com/thnxdev/utils/assets/72539235/a5ffdd99-0db0-4945-a95b-033864c56685)
 
 **Ensure you keep the token stored securely**
 Unfortunately, these are the minimum scopes that can create a sponsorship via the GH GraphQL API and they contain write permissions on your account.
