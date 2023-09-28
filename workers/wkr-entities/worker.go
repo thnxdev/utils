@@ -10,7 +10,7 @@ import (
 
 	"github.com/alecthomas/errors"
 	"github.com/google/go-github/v55/github"
-	wkrghsponsor "github.com/thnxdev/utils"
+	utils "github.com/thnxdev/utils"
 	"github.com/thnxdev/utils/database"
 	"github.com/thnxdev/utils/workers"
 )
@@ -21,8 +21,8 @@ func init() {
 
 func New(
 	db *database.DB,
-	ghAccesstoken wkrghsponsor.GhAccessToken,
-	donorEntities []wkrghsponsor.Entity,
+	ghAccesstoken utils.GhAccessToken,
+	donorEntities []utils.Entity,
 ) workers.Worker {
 	return func(ctx context.Context) (bool, error) {
 		/* autoquery name: KvstoreGetLastStatus :one
@@ -52,7 +52,7 @@ func New(
 		client := github.NewClient(nil).WithAuthToken(string(ghAccesstoken))
 		repos, resp, err := client.Repositories.List(ctx, "", &github.RepositoryListOptions{
 			ListOptions: github.ListOptions{
-				PerPage: 10,
+				PerPage: 100,
 				Page:    nextPage,
 			},
 		})

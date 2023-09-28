@@ -1,4 +1,4 @@
-package wkrghsponsor
+package utils
 
 type TdApiUrl string
 type TdApiKey string

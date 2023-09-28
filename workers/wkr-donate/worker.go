@@ -17,7 +17,7 @@ import (
 
 	"github.com/alecthomas/errors"
 	"github.com/shurcooL/githubv4"
-	wkrghsponsor "github.com/thnxdev/utils"
+	utils "github.com/thnxdev/utils"
 	"github.com/thnxdev/utils/database"
 	"github.com/thnxdev/utils/utils/log"
 	"github.com/thnxdev/utils/workers"
@@ -30,8 +30,8 @@ func init() {
 
 func New(
 	db *database.DB,
-	ghAccesstoken wkrghsponsor.GhAccessToken,
-	sponsorAmount wkrghsponsor.SponsorAmount,
+	ghAccesstoken utils.GhAccessToken,
+	sponsorAmount utils.SponsorAmount,
 ) workers.Worker {
 	return func(ctx context.Context) (bool, error) {
 		logger := log.FromContext(ctx)

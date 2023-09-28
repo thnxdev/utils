@@ -12,7 +12,7 @@ import (
 	"github.com/sirupsen/logrus"
 	"golang.org/x/sync/errgroup"
 
-	wkrghsponsor "github.com/thnxdev/utils"
+	utils "github.com/thnxdev/utils"
 	"github.com/thnxdev/utils/database"
 	"github.com/thnxdev/utils/utils/config"
 	"github.com/thnxdev/utils/utils/log"
@@ -33,12 +33,12 @@ var cli struct {
 	LogLevel logrus.Level `help:"Log level (${enum})." default:"info" enum:"trace,debug,info,warning,error,fatal,panic" group:"Observability:"`
 	LogJSON  bool         `help:"Log in JSON format." group:"Observability:"`
 
-	DbPath               string                     `help:"Path to db file." required:"" env:"DB_PATH" default:"db.sql"`
-	GhClassicAccessToken wkrghsponsor.GhAccessToken `help:"GitHub classis access token with admin:org & user scopes." required:"" env:"GH_CLASSIC_ACCESS_TOKEN"`
+	DbPath               string              `help:"Path to db file." required:"" env:"DB_PATH" default:"db.sql"`
+	GhClassicAccessToken utils.GhAccessToken `help:"GitHub classis access token with admin:org & user scopes." required:"" env:"GH_CLASSIC_ACCESS_TOKEN"`
 
-	Entities []wkrghsponsor.Entity `help:"The GitHub entities to process sponsorships for. First entity in the list is considered DEFAULT." required:""`
+	Entities []utils.Entity `help:"The GitHub entities to process sponsorships for. First entity in the list is considered DEFAULT." required:""`
 
-	SponsorAmount wkrghsponsor.SponsorAmount `help:"The amount to donate to each dependency" default:"1"`
+	SponsorAmount utils.SponsorAmount `help:"The amount to donate to each dependency" default:"1"`
 }
 
 func main() {
@@ -100,8 +100,6 @@ func main() {
 	kctx.Bind(cli.SponsorAmount)
 
 	workers.Run(ctx, wg, kctx)
-
-	logger.Info("exiting")
 
 	kctx.Exit(0)
 }

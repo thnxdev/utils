@@ -116,4 +116,6 @@ func Run(ctx context.Context, wg *errgroup.Group, kctx *kong.Context) {
 	if err != nil && !errors.Is(err, context.Canceled) {
 		kctx.FatalIfErrorf(err)
 	}
+
+	logger.Info("Exiting")
 }

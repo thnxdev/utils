@@ -9,7 +9,7 @@ import (
 
 	"github.com/alecthomas/errors"
 	"github.com/shurcooL/githubv4"
-	wkrghsponsor "github.com/thnxdev/utils"
+	utils "github.com/thnxdev/utils"
 	"github.com/thnxdev/utils/database"
 	"github.com/thnxdev/utils/utils/httpgh"
 	"github.com/thnxdev/utils/utils/log"
@@ -23,8 +23,8 @@ func init() {
 
 func New(
 	db *database.DB,
-	ghAccesstoken wkrghsponsor.GhAccessToken,
-	donorEntities []wkrghsponsor.Entity,
+	ghAccesstoken utils.GhAccessToken,
+	donorEntities []utils.Entity,
 ) workers.Worker {
 	return func(ctx context.Context) (bool, error) {
 		/* autoquery name: GetRepos :one

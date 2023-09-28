@@ -13,8 +13,12 @@ migrate: ## Create all databases and apply migrations
 	$(MAKE) -C server/db migrate
 
 .PHONY:
-dev: ## Run hot reload dev server
-	reflex -d fancy -c reflex.conf
+dev-boost: ## Run hot reload dev server
+	reflex -d fancy -c reflex-boost.conf
+
+.PHONY:
+dev-sponsor: ## Run hot reload dev server
+	reflex -d fancy -c reflex-sponsor.conf
 
 .PHONY:
 reset:
