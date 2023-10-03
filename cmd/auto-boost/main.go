@@ -128,25 +128,28 @@ func run(
 				continue
 			}
 
-			if slices.Contains(r.Topics, "tag-archived") {
-				logger.Infof("archived %s", *r.FullName)
-			} else if slices.Contains(r.Topics, "tag-production") {
-				url := fmt.Sprintf("%s/v1/api/setting/entity/gh/%s/%s", tdApiUrl, *entityName, *r.Name)
-				logger.Infof("updating %s", *r.FullName)
-
-				req, err := http.NewRequest("POST", url, bytes.NewReader([]byte(`{"rank":5}`)))
-				if err != nil {
-					return errors.Wrap(err, "failed to create TD request")
-				}
-				req.Header.Set("content-type", "application/json")
-				req.Header.Set("api-key", string(tdApiKey))
-				resp, err := http.DefaultClient.Do(req)
-				if err != nil {
-					return errors.Wrap(err, "failed to update")
-				}
-				defer resp.Body.Close()
-				logger.Info(resp.StatusCode)
+			var payload string
+			if (r.Archived == nil || !*r.Archived) && slices.Contains(r.Topics, "tag-production") {
+				payload = `{"rank":1}`
+			} else {
+				payload = `{"rank":0}`
 			}
+
+			url := fmt.Sprintf("%s/v1/api/setting/entity/gh/%s/%s", tdApiUrl, *entityName, *r.Name)
+			logger.Infof("updating %s", *r.FullName)
+
+			req, err := http.NewRequest("POST", url, bytes.NewReader([]byte(payload)))
+			if err != nil {
+				return errors.Wrap(err, "failed to create TD request")
+			}
+			req.Header.Set("content-type", "application/json")
+			req.Header.Set("api-key", string(tdApiKey))
+			resp, err := http.DefaultClient.Do(req)
+			if err != nil {
+				return errors.Wrap(err, "failed to update")
+			}
+			defer resp.Body.Close()
+			logger.Info(resp.StatusCode)
 		}
 
 		nextPage = resp.NextPage
