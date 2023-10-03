@@ -3,3 +3,4 @@
 .hermit
 db.sql
 config.json
+out.csv
