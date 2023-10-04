@@ -5,20 +5,6 @@ FROM repos
 WHERE animate_ts < last_ts
 LIMIT 1;
 
--- name: GetAreReposFinished :one
-
-WITH d AS (VALUES(1))
-SELECT kv.v IS NOT NULL AS is_finished
-FROM d
-LEFT JOIN kvstore kv ON k = 'entity-ts';
-
--- name: InsertDonation :exec
-
-INSERT INTO donations (sponsor_id, recipient_id, last_ts)
-VALUES (?, ?, ?)
-ON CONFLICT (sponsor_id, recipient_id)
-DO NOTHING;
-
 -- name: RepoUpdateCursorDep :exec
 
 UPDATE repos

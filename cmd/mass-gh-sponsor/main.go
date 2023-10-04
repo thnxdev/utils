@@ -18,6 +18,7 @@ import (
 	animaterepos "github.com/thnxdev/utils/commands/animate-repos"
 	dlrepos "github.com/thnxdev/utils/commands/dl-repos"
 	"github.com/thnxdev/utils/commands/donate"
+	importcsv "github.com/thnxdev/utils/commands/import-csv"
 )
 
 // Populated during build.
@@ -32,6 +33,7 @@ var cli struct {
 
 	DbPath string `help:"Path to db file." required:"" env:"DB_PATH" default:"db.sql"`
 
+	ImportCsv    importcsv.CmdImportCsv       `cmd:"" help:"Import list of donations from csv file."`
 	DlRepos      dlrepos.CmdDlRepos           `cmd:"" help:"Import the user's github repos."`
 	AnimateRepos animaterepos.CmdAnimateRepos `cmd:"" help:"Animate the sponsorable dependencies for each repo."`
 	Donate       donate.CmdDonate             `cmd:"" help:"Create the require GitHub sponsorships."`

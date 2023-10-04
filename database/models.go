@@ -17,11 +17,6 @@ type Donation struct {
 	DonateAttemptTs int64
 }
 
-type Kvstore struct {
-	K string
-	V string
-}
-
 type Repo struct {
 	OwnerName      string
 	RepoName       string

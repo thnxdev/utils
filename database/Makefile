@@ -7,18 +7,3 @@ regen: Makefile $(wildcard */db.go */query.sql.go */models.go) ## Rebuild the sq
 
 db.go query.sql.go models.go: Makefile sqlc.yaml $$(wildcard queries/*.sql) $$(wildcard schema/*.sql)
 	sqlc generate
-
-.PHONY: migrate
-migrate: ## Create all databases and apply migrations
-	for i in */schema; do \
-		db="td-$$(dirname $$i)"; \
-		createdb "$$db" || true; \
-		(cd "$$i" && $ goose postgres "dbname=$$db sslmode=disable" up); \
-	done
-
-.PHONY: drop
-drop: ## Drop all databases
-	for i in */schema; do \
-		db="td-$$(dirname $$i)"; \
-		dropdb "$$db"; \
-	done

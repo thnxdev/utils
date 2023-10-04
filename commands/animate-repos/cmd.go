@@ -123,13 +123,6 @@ func (c *CmdAnimateRepos) Run(
 			for _, d := range m.Depenencies.Nodes {
 				o := d.Repository.Owner
 				if o.Sponsorable.HasSponsorsListing {
-					/* autoquery name: InsertDonation :exec
-
-					INSERT INTO donations (sponsor_id, recipient_id, last_ts)
-					VALUES (?, ?, ?)
-					ON CONFLICT (sponsor_id, recipient_id)
-					DO NOTHING;
-					*/
 					_ = db.InsertDonation(ctx, database.InsertDonationParams{
 						SponsorID:   row.OwnerName,
 						RecipientID: o.RepositoryOwner.Login,
