@@ -2,7 +2,6 @@ package main
 
 import (
 	"context"
-	"fmt"
 	"os"
 	"os/signal"
 	"syscall"
@@ -12,15 +11,13 @@ import (
 	"github.com/sirupsen/logrus"
 	"golang.org/x/sync/errgroup"
 
-	utils "github.com/thnxdev/utils"
 	"github.com/thnxdev/utils/database"
 	"github.com/thnxdev/utils/utils/config"
 	"github.com/thnxdev/utils/utils/log"
-	"github.com/thnxdev/utils/workers"
 
-	_ "github.com/thnxdev/utils/workers/wkr-donate"
-	_ "github.com/thnxdev/utils/workers/wkr-entities"
-	_ "github.com/thnxdev/utils/workers/wkr-repos"
+	animaterepos "github.com/thnxdev/utils/commands/animate-repos"
+	dlrepos "github.com/thnxdev/utils/commands/dl-repos"
+	"github.com/thnxdev/utils/commands/donate"
 )
 
 // Populated during build.
@@ -33,16 +30,14 @@ var cli struct {
 	LogLevel logrus.Level `help:"Log level (${enum})." default:"info" enum:"trace,debug,info,warning,error,fatal,panic" group:"Observability:"`
 	LogJSON  bool         `help:"Log in JSON format." group:"Observability:"`
 
-	DbPath               string              `help:"Path to db file." required:"" env:"DB_PATH" default:"db.sql"`
-	GhClassicAccessToken utils.GhAccessToken `help:"GitHub classis access token with admin:org & user scopes." required:"" env:"GH_CLASSIC_ACCESS_TOKEN"`
+	DbPath string `help:"Path to db file." required:"" env:"DB_PATH" default:"db.sql"`
 
-	Entities []utils.Entity `help:"The GitHub entities to process sponsorships for. First entity in the list is considered DEFAULT." required:""`
-
-	SponsorAmount utils.SponsorAmount `help:"The amount to donate to each dependency" default:"1"`
+	DlRepos      dlrepos.CmdDlRepos           `cmd:"" help:"Import the user's github repos."`
+	AnimateRepos animaterepos.CmdAnimateRepos `cmd:"" help:"Animate the sponsorable dependencies for each repo."`
+	Donate       donate.CmdDonate             `cmd:"" help:"Create the require GitHub sponsorships."`
 }
 
 func main() {
-
 	options := []kong.Option{
 		kong.Configuration(config.CreateLoader),
 		kong.HelpOptions{Compact: true},
@@ -56,13 +51,6 @@ func main() {
 		kong.Vars{
 			"version": GitCommit,
 		},
-	}
-
-	wkrs := workers.GetWorkers()
-	for name, cfg := range wkrs {
-		options = append(options,
-			kong.Embed(cfg, fmt.Sprintf(`embed:"" prefix:"%s-" group:"%s"`, name, name)),
-			kong.Bind(cfg))
 	}
 
 	kctx := kong.Parse(&cli, options...)
@@ -94,12 +82,11 @@ func main() {
 	db, err := database.Open(ctx, cli.DbPath)
 	kctx.FatalIfErrorf(err)
 
+	kctx.BindTo(ctx, (*context.Context)(nil))
 	kctx.Bind(db)
-	kctx.Bind(cli.GhClassicAccessToken)
-	kctx.Bind(cli.Entities)
-	kctx.Bind(cli.SponsorAmount)
 
-	workers.Run(ctx, wg, kctx)
+	err = kctx.Run()
+	kctx.FatalIfErrorf(err)
 
 	kctx.Exit(0)
 }

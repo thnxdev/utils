@@ -1,10 +1,5 @@
 -- +goose Up
 
-CREATE TABLE kvstore (
-  k TEXT PRIMARY KEY,
-  v TEXT NOT NULL
-);
-
 CREATE TABLE repos (
   owner_name TEXT NOT NULL,
   repo_name TEXT NOT NULL,

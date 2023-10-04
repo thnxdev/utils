@@ -1,5 +1,5 @@
 //go:generate autoquery
-package wkrrepos
+package animaterepos
 
 import (
 	"context"
@@ -13,20 +13,21 @@ import (
 	"github.com/thnxdev/utils/database"
 	"github.com/thnxdev/utils/utils/httpgh"
 	"github.com/thnxdev/utils/utils/log"
-	"github.com/thnxdev/utils/workers"
 	"golang.org/x/oauth2"
 )
 
-func init() {
-	workers.Register(New)
+type CmdAnimateRepos struct {
+	GhClassicAccessToken utils.GhAccessToken `help:"GitHub classis access token with admin:org & user scopes." required:"" env:"GH_CLASSIC_ACCESS_TOKEN"`
 }
 
-func New(
+func (c *CmdAnimateRepos) Run(
+	ctx context.Context,
 	db *database.DB,
-	ghAccesstoken utils.GhAccessToken,
-	donorEntities []utils.Entity,
-) workers.Worker {
-	return func(ctx context.Context) (bool, error) {
+) error {
+	logger := log.FromContext(ctx)
+	logger.Info("starting")
+
+	for {
 		/* autoquery name: GetRepos :one
 
 		SELECT owner_name, repo_name, cursor_manifest, cursor_dep
@@ -37,26 +38,9 @@ func New(
 		row, err := db.GetRepos(ctx)
 		if err != nil {
 			if errors.Is(err, sql.ErrNoRows) {
-				// If entities is finished and there are no more rows
-				// then this worker should finish as well
-
-				/* autoquery name: GetAreReposFinished :one
-
-				WITH d AS (VALUES(1))
-				SELECT kv.v IS NOT NULL AS is_finished
-				FROM d
-				LEFT JOIN kvstore kv ON k = 'entity-ts';
-				*/
-				isFinished, err := db.GetAreReposFinished(ctx)
-				if err != nil {
-					return false, nil
-				}
-				if isFinished {
-					return false, workers.ErrDone
-				}
-				return false, nil
+				return nil
 			}
-			return false, errors.Wrap(err, "failed to get repos")
+			return errors.Wrap(err, "failed to get repos")
 		}
 
 		log.FromContext(ctx).Debugf(
@@ -123,14 +107,14 @@ func New(
 			oauth2.NewClient(
 				hctx,
 				oauth2.StaticTokenSource(&oauth2.Token{
-					AccessToken: string(ghAccesstoken),
+					AccessToken: string(c.GhClassicAccessToken),
 				}),
 			),
 		)
 
 		err = client.Query(hctx, &q, vars)
 		if err != nil {
-			return false, errors.Wrap(err, "failed to query repos")
+			return errors.Wrap(err, "failed to query repos")
 		}
 
 		var manifetsCursor, depCursor *string
@@ -203,7 +187,7 @@ func New(
 				RepoName:  row.RepoName,
 			})
 		}
-
-		return true, nil
 	}
+
+	return nil
 }

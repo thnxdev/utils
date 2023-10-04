@@ -18,10 +18,6 @@ import (
 	utils "github.com/thnxdev/utils"
 	"github.com/thnxdev/utils/utils/config"
 	"github.com/thnxdev/utils/utils/log"
-
-	_ "github.com/thnxdev/utils/workers/wkr-donate"
-	_ "github.com/thnxdev/utils/workers/wkr-entities"
-	_ "github.com/thnxdev/utils/workers/wkr-repos"
 )
 
 // Populated during build.
@@ -41,7 +37,6 @@ var cli struct {
 }
 
 func main() {
-
 	options := []kong.Option{
 		kong.Configuration(config.CreateLoader),
 		kong.HelpOptions{Compact: true},
