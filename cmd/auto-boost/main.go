@@ -7,13 +7,13 @@ import (
 	"net/http"
 	"os"
 	"os/signal"
+	"regexp"
 	"syscall"
 
 	"github.com/alecthomas/errors"
 	"github.com/alecthomas/kong"
 	"github.com/google/go-github/v55/github"
 	"github.com/sirupsen/logrus"
-	"golang.org/x/exp/slices"
 
 	utils "github.com/thnxdev/utils"
 	"github.com/thnxdev/utils/utils/config"
@@ -124,16 +124,32 @@ func run(
 					break
 				}
 			}
-			if entityName == nil || (r.Archived != nil && *r.Archived) {
+
+			// ignore any repo that is not in entity list
+			// or is archived or is a fork.
+			if entityName == nil ||
+				(r.Archived != nil && *r.Archived) ||
+				(r.Fork != nil && *r.Fork) {
 				continue
 			}
 
-			var payload string
-			if (r.Archived == nil || !*r.Archived) && slices.Contains(r.Topics, "tag-production") {
-				payload = `{"rank":1}`
-			} else {
-				payload = `{"rank":0}`
+			var rank int = 1
+			pre := regexp.MustCompile("^(tag-non-production|tag-to-be-production-)")
+			are := regexp.MustCompile("^(tag-archived|tag-to-be-archived-|tag-lost-and-found-)")
+			for _, topic := range r.Topics {
+				if topic == "tag-production" {
+					rank = 5
+					break
+				} else if are.Match([]byte(topic)) {
+					rank = 0
+					break
+				} else if pre.Match([]byte(topic)) {
+					rank = 3
+					break
+				}
 			}
+
+			payload := fmt.Sprintf(`{"rank":%d}`, rank)
 
 			url := fmt.Sprintf("%s/v1/api/setting/entity/gh/%s/%s", tdApiUrl, *entityName, *r.Name)
 			logger.Infof("updating %s", *r.FullName)
