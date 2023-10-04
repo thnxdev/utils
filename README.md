@@ -33,47 +33,37 @@ Observability:
 ## 2. mass-gh-sponsor
 ```
 ➜  utils git:(master) ./scripts/mass-gh-sponsor --help
-Usage: mass-gh-sponsor --db-path="db.sql" --gh-classic-access-token=GH-ACCESS-TOKEN --entities=ENTITIES,...
+Usage: mass-gh-sponsor --db-path="db.sql" <command>
 
 Flags:
-  -h, --help                     Show context-sensitive help.
-  -v, --version                  Print version and exit.
-  -C, --config=FILE              Config file ($CONFIG_PATH).
-      --db-path="db.sql"         Path to db file ($DB_PATH).
-      --gh-classic-access-token=GH-ACCESS-TOKEN
-                                 GitHub classis access token with admin:org & user scopes ($GH_CLASSIC_ACCESS_TOKEN).
-      --entities=ENTITIES,...    The GitHub entities to process sponsorships for. First entity in the list is considered
-                                 DEFAULT.
-      --sponsor-amount=1         The amount to donate to each dependency
+  -h, --help                Show context-sensitive help.
+  -v, --version             Print version and exit.
+  -C, --config=FILE         Config file ($CONFIG_PATH).
+      --db-path="db.sql"    Path to db file ($DB_PATH).
 
 Observability:
   --log-level=info    Log level (trace,debug,info,warning,error,fatal,panic).
   --log-json          Log in JSON format.
 
-wkr-donate
-  --wkr-donate-disabled             Flag to disable worker
-  --wkr-donate-work-interval=10s    Sleep duration per run while processing
+Commands:
+  import-csv       Import list of donations from csv file.
+  dl-repos         Import the user's github repos.
+  animate-repos    Animate the sponsorable dependencies for each repo.
+  donate           Create the require GitHub sponsorships.
 
-wkr-entities
-  --wkr-entities-disabled             Flag to disable worker
-  --wkr-entities-work-interval=10s    Sleep duration per run while processing
-
-wkr-repos
-  --wkr-repos-disabled             Flag to disable worker
-  --wkr-repos-work-interval=10s    Sleep duration per run while processing
+Run "mass-gh-sponsor <command> --help" for more information on a command.
 ```
 
-### 2.1 Run locally
+### 2.1 Run locally (import from gh)
 `. bin/activate-hermit`
-`GH_CLASSIC_ACCESS_TOKEN=<TOKEN> ./scripts/mass-gh-sponsor --config example.config.json`
+`GH_CLASSIC_ACCESS_TOKEN=<TOKEN> ./scripts/mass-gh-sponsor --log-level=debug dl-repos --entities=syntaxfm`
+`GH_CLASSIC_ACCESS_TOKEN=<TOKEN> ./scripts/mass-gh-sponsor --log-level=debug animate-repos`
+`GH_CLASSIC_ACCESS_TOKEN=<TOKEN> ./scripts/mass-gh-sponsor --log-level=debug donate`
 
-### 2.2 Docker & docker compose
-A sample docker-compose.yml is provided to run this project.
-```
-cp example.env .env # update the latest api keys & access tokens
-cp example.config.json config.json # insert the github slugs of the user accounts / orgs
-docker compose --env-file .env up -d mass-gh-sponsor
-```
+### 2.2 Run locally (import from csv)
+`. bin/activate-hermit`
+`GH_CLASSIC_ACCESS_TOKEN=<TOKEN> ./scripts/mass-gh-sponsor --log-level=debug import-csv --entity=syntaxfm --file-path=<PATH_TO_CSV_FILE>`
+`GH_CLASSIC_ACCESS_TOKEN=<TOKEN> ./scripts/mass-gh-sponsor --log-level=debug donate`
 
 ## 3. TD-API-KEY
 To obtain a thanks.dev API key, log into thanks.dev and visit the settings screen. The API key configurations are located towards the bottom of the screen.
