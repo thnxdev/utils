@@ -104,13 +104,14 @@ func run(
 	}
 
 	incIndex := map[string]bool{}
+	incSeen := map[string]bool{}
 	for _, _inc := range inclusions {
 		inc := _inc.([]any)
 		name := inc[0].(string)
 		wantsFunding := inc[2].(bool)
 		isOnTd := inc[3].(bool)
 		if wantsFunding || isOnTd {
-			incIndex[name] = true
+			incIndex[name] = isOnTd
 		}
 	}
 
@@ -122,6 +123,7 @@ func run(
 		isIncluded, isOnTd := "false", "false"
 		if _, ok := incIndex[name]; ok {
 			isIncluded = "true"
+			incSeen[name] = true
 		}
 
 		if dep[1].(bool) {
@@ -144,6 +146,22 @@ func run(
 			strings.Join(dependeeRepos, ","),
 			strings.Join(dependerEntities, ","),
 		})
+	}
+
+	for name, isOnTd := range incIndex {
+		if _, ok := incSeen[name]; !ok {
+			isOnTdStr := "false"
+			if isOnTd {
+				isOnTdStr = "true"
+			}
+			records = append(records, []string{
+				name,
+				"true",
+				isOnTdStr,
+				"",
+				"",
+			})
+		}
 	}
 
 	f, err := os.Create(outpath)
