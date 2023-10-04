@@ -56,13 +56,18 @@ Run "mass-gh-sponsor <command> --help" for more information on a command.
 
 ### 2.1 Run locally (import from gh)
 `. bin/activate-hermit`
+
 `GH_CLASSIC_ACCESS_TOKEN=<TOKEN> ./scripts/mass-gh-sponsor --log-level=debug dl-repos --entities=syntaxfm`
+
 `GH_CLASSIC_ACCESS_TOKEN=<TOKEN> ./scripts/mass-gh-sponsor --log-level=debug animate-repos`
+
 `GH_CLASSIC_ACCESS_TOKEN=<TOKEN> ./scripts/mass-gh-sponsor --log-level=debug donate`
 
 ### 2.2 Run locally (import from csv)
 `. bin/activate-hermit`
+
 `GH_CLASSIC_ACCESS_TOKEN=<TOKEN> ./scripts/mass-gh-sponsor --log-level=debug import-csv --entity=syntaxfm --file-path=<PATH_TO_CSV_FILE>`
+
 `GH_CLASSIC_ACCESS_TOKEN=<TOKEN> ./scripts/mass-gh-sponsor --log-level=debug donate`
 
 ## 3. TD-API-KEY
