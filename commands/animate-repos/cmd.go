@@ -141,7 +141,7 @@ func (c *CmdAnimateRepos) Run(
 		}
 
 		if depCursor != nil {
-			dc := sql.NullString{*depCursor, true}
+			dc := sql.NullString{String: *depCursor, Valid: true}
 
 			/* autoquery name: RepoUpdateCursorDep :exec
 
@@ -155,7 +155,7 @@ func (c *CmdAnimateRepos) Run(
 				CursorDep: dc,
 			})
 		} else if manifetsCursor != nil {
-			mc := sql.NullString{*manifetsCursor, true}
+			mc := sql.NullString{String: *manifetsCursor, Valid: true}
 
 			/* autoquery name: RepoUpdateCursorManifest :exec
 
@@ -181,6 +181,4 @@ func (c *CmdAnimateRepos) Run(
 			})
 		}
 	}
-
-	return nil
 }

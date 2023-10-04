@@ -33,7 +33,7 @@ func flatten(config map[string]interface{}) map[string]interface{} {
 		switch v := v.(type) {
 		case map[string]interface{}:
 			for k2, v2 := range flatten(v) {
-				flat[camelCase(k)+strings.Title(camelCase(k2))] = v2
+				flat[camelCase(k)+strings.Title(camelCase(k2))] = v2 // nolint:staticcheck
 			}
 		default:
 			flat[k] = v
@@ -43,6 +43,6 @@ func flatten(config map[string]interface{}) map[string]interface{} {
 }
 
 func camelCase(s string) string {
-	out := strings.ReplaceAll(strings.Title(strings.ReplaceAll(s, "-", " ")), " ", "")
+	out := strings.ReplaceAll(strings.Title(strings.ReplaceAll(s, "-", " ")), " ", "") // nolint:staticcheck
 	return strings.ToLower(out[:1]) + out[1:]
 }
