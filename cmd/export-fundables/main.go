@@ -103,15 +103,25 @@ func run(
 		return err
 	}
 
-	incIndex := map[string]bool{}
+	incIndex := map[string]struct {
+		weight string
+		isOnTd bool
+	}{}
 	incSeen := map[string]bool{}
 	for _, _inc := range inclusions {
 		inc := _inc.([]any)
 		name := inc[0].(string)
+		weight := inc[1].(float64)
 		wantsFunding := inc[2].(bool)
 		isOnTd := inc[3].(bool)
 		if wantsFunding || isOnTd {
-			incIndex[name] = isOnTd
+			incIndex[name] = struct {
+				weight string
+				isOnTd bool
+			}{
+				weight: fmt.Sprintf("%d", int(weight)),
+				isOnTd: isOnTd,
+			}
 		}
 	}
 
@@ -120,9 +130,9 @@ func run(
 		dep := _dep.([]any)
 		name := dep[0].(string)
 
-		isIncluded, isOnTd := "false", "false"
-		if _, ok := incIndex[name]; ok {
-			isIncluded = "true"
+		isOnTd, weight := "false", "0"
+		if inc, ok := incIndex[name]; ok {
+			weight = inc.weight
 			incSeen[name] = true
 		}
 
@@ -139,27 +149,31 @@ func run(
 			dependerEntities = append(dependerEntities, r.(string))
 		}
 
+		score := dep[4].(string)
+
 		records = append(records, []string{
 			name,
-			isIncluded,
 			isOnTd,
 			strings.Join(dependeeRepos, ","),
 			strings.Join(dependerEntities, ","),
+			score,
+			weight,
 		})
 	}
 
-	for name, isOnTd := range incIndex {
+	for name, inc := range incIndex {
 		if _, ok := incSeen[name]; !ok {
 			isOnTdStr := "false"
-			if isOnTd {
+			if inc.isOnTd {
 				isOnTdStr = "true"
 			}
 			records = append(records, []string{
 				name,
-				"true",
 				isOnTdStr,
 				"",
 				"",
+				"0",
+				inc.weight,
 			})
 		}
 	}
@@ -172,7 +186,7 @@ func run(
 	defer f.Close()
 
 	w := csv.NewWriter(f)
-	_ = w.Write([]string{"name", "isIncluded", "isOnTd", "repos", "entities"})
+	_ = w.Write([]string{"name", "isOnTd", "repos", "entities", "score", "weight"})
 	_ = w.WriteAll(records)
 
 	return nil
