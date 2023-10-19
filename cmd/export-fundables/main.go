@@ -186,7 +186,7 @@ func run(
 	defer f.Close()
 
 	w := csv.NewWriter(f)
-	_ = w.Write([]string{"name", "isOnTd", "repos", "entities", "score", "weight"})
+	_ = w.Write([]string{"name", "isOnTd", "repos", "entities", "score", "inc weight"})
 	_ = w.WriteAll(records)
 
 	return nil
