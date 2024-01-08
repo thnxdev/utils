@@ -63,6 +63,9 @@ func (c *CmdDonate) Run(
 	amount := githubv4.Int(c.Amount)
 	isRecurring := githubv4.Boolean(c.IsRecurring)
 	privacyLevel := githubv4.SponsorshipPrivacy(githubv4.SponsorshipPrivacyPublic)
+	receiveEmails := githubv4.Boolean(false)
+
+	sponsorIds := map[string]string{}
 
 	// For each recipient create a GH sponsorship that is:
 	//	- $1
@@ -72,26 +75,56 @@ func (c *CmdDonate) Run(
 		row := row
 		logger.Infof("donating %s:%s", row.SponsorID, row.RecipientID)
 
-		var m struct {
-			CreateSponsorship struct {
-				ClientMutationID string
-			} `graphql:"createSponsorship(input:$input)"`
-		}
-		id := githubv4.String(fmt.Sprintf("%s:%s", row.SponsorID, row.RecipientID))
-		sponsorLogin := githubv4.String(row.SponsorID)
-		sponsorableLogin := githubv4.String(row.RecipientID)
-		var input githubv4.Input = githubv4.CreateSponsorshipInput{
-			ClientMutationID: &id,
-			IsRecurring:      &isRecurring,
-			Amount:           &amount,
-			SponsorLogin:     &sponsorLogin,
-			SponsorableLogin: &sponsorableLogin,
-			PrivacyLevel:     &privacyLevel,
+		failed := false
+
+		sid, ok := sponsorIds[row.SponsorID]
+		if !ok {
+			var q struct {
+				RepositoryOwner struct {
+					ID string
+				} `graphql:"repositoryOwner(login: $login)"`
+			}
+			var vars map[string]any = map[string]any{
+				"login": githubv4.String(row.SponsorID),
+			}
+
+			err := client.Query(ctx, &q, vars)
+			if err != nil {
+				logger.WithError(err).Error("failed to get sponsor id")
+				failed = true
+			} else {
+				sid = q.RepositoryOwner.ID
+				sponsorIds[row.SponsorID] = sid
+			}
 		}
 
-		err := client.Mutate(ctx, &m, input, nil)
-		if err != nil {
-			logger.WithError(err).Error("failed to create sponsorship")
+		if !failed {
+			var m struct {
+				CreateSponsorship struct {
+					ClientMutationID string
+				} `graphql:"createSponsorship(input:$input)"`
+			}
+			id := githubv4.String(fmt.Sprintf("%s:%s", row.SponsorID, row.RecipientID))
+			sponsorId := githubv4.ID(sid)
+			sponsorableLogin := githubv4.String(row.RecipientID)
+			var input githubv4.Input = githubv4.CreateSponsorshipInput{
+				ClientMutationID: &id,
+				IsRecurring:      &isRecurring,
+				Amount:           &amount,
+				SponsorID:        &sponsorId,
+				SponsorableLogin: &sponsorableLogin,
+				PrivacyLevel:     &privacyLevel,
+				ReceiveEmails:    &receiveEmails,
+			}
+
+			err := client.Mutate(ctx, &m, input, nil)
+			if err != nil {
+				logger.WithError(err).Errorf("failed to create sponsorship for %s", row.RecipientID)
+				failed = true
+			}
+		}
+
+		if failed {
 			/* autoquery name: UpdateDonationDonateAttemptTs :exec
 
 			UPDATE donations
@@ -99,16 +132,15 @@ func (c *CmdDonate) Run(
 			WHERE id = ?;
 			*/
 			_ = db.UpdateDonationDonateAttemptTs(ctx, row.ID)
-			continue
+		} else {
+			/* autoquery name: UpdateDonationDonateTs :exec
+
+			UPDATE donations
+			SET donate_ts = UNIXEPOCH()
+			WHERE id = ?;
+			*/
+			_ = db.UpdateDonationDonateTs(ctx, row.ID)
 		}
-
-		/* autoquery name: UpdateDonationDonateTs :exec
-
-		UPDATE donations
-		SET donate_ts = UNIXEPOCH()
-		WHERE id = ?;
-		*/
-		_ = db.UpdateDonationDonateTs(ctx, row.ID)
 	}
 
 	return nil
